@@ -52,7 +52,14 @@ const quiz=[
 {en:{q:'First stable product of TCA cycle:',o:['Citric acid','OAA','Succinic acid','Malic acid']},bn:{q:'TCA চক্রের প্রথম স্থিতিশীল উৎপাদ:',o:['সিট্রিক অ্যাসিড','OAA','সাকসিনিক অ্যাসিড','ম্যালিক অ্যাসিড']},a:0},
 {en:{q:'Complex V of ETS is:',o:['ATP synthase','Cytochrome c','NADH dehydrogenase','Ubiquinone']},bn:{q:'ETS-এর Complex V কোনটি?',o:['ATP সিনথেজ','সাইটোক্রোম c','NADH ডিহাইড্রোজেনেজ','ইউবিকুইনোন']},a:0}
 ];
-
+let i=0,lang='en',lock=false,score=0;
+const q=document.getElementById('question'),o=document.getElementById('options'),qno=document.getElementById('qno'),progress=document.getElementById('progress'),next=document.getElementById('next');
+function load(){lock=false;next.disabled=true;o.innerHTML='';const d=quiz[i][lang];q.textContent=d.q;qno.textContent=`Question ${i+1} / ${quiz.length}`;progress.textContent=`Score: ${score}`;d.o.forEach((t,idx)=>{const div=document.createElement('div');div.className='option';div.textContent=t;div.onclick=()=>select(div,idx);o.appendChild(div)});} 
+function select(el,idx){if(lock)return;lock=true;next.disabled=false;[...o.children].forEach((c,j)=>{if(j===quiz[i].a){c.classList.add('correct');if(j===idx)score++;}if(j===idx&&j!==quiz[i].a)c.classList.add('wrong');});progress.textContent=`Score: ${score}`;} 
+next.onclick=()=>{i++;if(i<quiz.length)load();else{q.innerHTML=`🎉 Quiz Completed<br>Score: ${score}/${quiz.length}`;o.innerHTML='';qno.textContent='';progress.textContent='';next.disabled=true;}};
+document.getElementById('en').onclick=()=>{lang='en';en.classList.add('active');bn.classList.remove('active');load()};
+document.getElementById('bn').onclick=()=>{lang='bn';bn.classList.add('active');en.classList.remove('active');load()};
+load();
 </script>
 </body>
 </html>
