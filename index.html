@@ -1,1 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEET Biology – Full Chapter Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Noto+Sans+Bengali:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Poppins','Noto Sans Bengali',sans-serif;background:linear-gradient(135deg,#020617,#0f172a);color:#e5e7eb;min-height:100vh;display:flex;justify-content:center;align-items:center}
+.app{width:100%;max-width:780px;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.title{font-size:1.5rem;font-weight:600}
+.lang button{margin-left:6px;padding:6px 14px;border-radius:20px;border:1px solid #38bdf8;background:none;color:#38bdf8;cursor:pointer}
+.lang button.active{background:#38bdf8;color:#020617}
+.card{background:#020617;border-radius:18px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+.qno{color:#9ca3af;font-size:.9rem;margin-bottom:6px}
+.question{font-size:1.1rem;margin-bottom:16px}
+.options{display:grid;gap:10px}
+.option{padding:12px 14px;border-radius:12px;border:1px solid #1f2937;cursor:pointer;transition:.2s}
+.option:hover{border-color:#38bdf8}
+.option.correct{background:rgba(34,197,94,.18);border-color:#22c55e;color:#bbf7d0}
+.option.wrong{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fecaca}
+.footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center}
+.btn{padding:8px 20px;border:none;border-radius:22px;background:linear-gradient(135deg,#22c55e,#38bdf8);color:#020617;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.result{text-align:center;font-size:1.3rem}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+<div class="title">📘 NEET Biology – Full Quiz</div>
+<div class="lang"><button id="en" class="active">English</button><button id="bn">বাংলা</button></div>
+</div>
+<div class="card">
+<div id="qno" class="qno"></div>
+<div id="question" class="question"></div>
+<div id="options" class="options"></div>
+<div class="footer"><div id="progress"></div><button id="next" class="btn" disabled>Next</button></div>
+</div>
+</div>
+<script>
+const quiz=[
+{en:{q:'The mechanism of breakdown of food inside cell is called:',o:['Anabolism','Photophosphorylation','Cellular respiration','Breathing']},bn:{q:'কোষের ভিতরে খাদ্য ভাঙার প্রক্রিয়াকে কী বলে?',o:['অ্যানাবলিজম','ফটোফসফরাইলেশন','কোষশ্বাস','শ্বাসক্রিয়া']},a:2},
+{en:{q:'Compounds oxidised during respiration are called:',o:['Reduced substrates','Respiratory substrates','Oxidisable compounds','Respiratory substances']},bn:{q:'শ্বাসক্রিয়ায় যে যৌগগুলি জারিত হয় তাদের বলে?',o:['হ্রাসপ্রাপ্ত সাবস্ট্রেট','রেসপিরেটরি সাবস্ট্রেট','অক্সিডাইজেবল যৌগ','রেসপিরেটরি পদার্থ']},a:1},
+{en:{q:'Function of molecular oxygen in respiration is:',o:['Break citric acid','Combine with glucose','Combine with carbon','Combine with hydrogen to form water']},bn:{q:'শ্বাসক্রিয়ায় অক্সিজেনের কাজ কী?',o:['সিট্রিক অ্যাসিড ভাঙা','গ্লুকোজের সাথে যুক্ত হওয়া','কার্বনের সাথে যুক্ত হওয়া','হাইড্রোজেনের সাথে যুক্ত হয়ে জল তৈরি']},a:3},
+{en:{q:'Incorrect statement about respiration in plants is:',o:['Plants require O₂','Plants ensure O₂ availability','Plants have specialised organs','Plants have stomata & lenticels']},bn:{q:'উদ্ভিদের শ্বাসক্রিয়া সম্পর্কে ভুলটি কোনটি?',o:['O₂ প্রয়োজন','O₂ প্রাপ্যতার ব্যবস্থা আছে','বিশেষ অঙ্গ আছে','স্টোমাটা ও লেন্টিসেল আছে']},a:2},
+{en:{q:'General formula of aerobic respiration:',o:['6CO₂+2H₂O→C₆H₁₂O₆+6O₂','C₆H₁₂O₆+6O₂→6CO₂+6H₂O+Energy','C₆H₁₂O₆→2C₂H₅OH+2CO₂','C₆H₁₂O₆→2C₃H₆O₃']},bn:{q:'এরোবিক শ্বাসক্রিয়ার সাধারণ সমীকরণ:',o:['6CO₂+2H₂O→C₆H₁₂O₆+6O₂','C₆H₁₂O₆+6O₂→6CO₂+6H₂O+শক্তি','অ্যালকোহলিক ফারমেন্টেশন','ল্যাকটিক ফারমেন্টেশন']},a:1},
+{en:{q:'Common respiratory substrate is:',o:['Fructose','Glucose','Sucrose','Lactose']},bn:{q:'সবচেয়ে সাধারণ রেসপিরেটরি সাবস্ট্রেট:',o:['ফ্রুক্টোজ','গ্লুকোজ','সুক্রোজ','ল্যাকটোজ']},a:1},
+{en:{q:'Common pathway of aerobic & anaerobic respiration:',o:['Krebs cycle','Glycolysis','ETS','Oxidative phosphorylation']},bn:{q:'এরোবিক ও অ্যানারোবিক শ্বাসের সাধারণ ধাপ:',o:['ক্রেবস চক্র','গ্লাইকোলাইসিস','ইটিএস','অক্সিডেটিভ ফসফরাইলেশন']},a:1},
+{en:{q:'End product of alcoholic fermentation:',o:['Water','Alcohol + CO₂','Lactic acid','Pyruvate']},bn:{q:'অ্যালকোহলিক ফারমেন্টেশনের শেষ উৎপাদ:',o:['জল','অ্যালকোহল ও CO₂','ল্যাকটিক অ্যাসিড','পাইরুভেট']},a:1},
+{en:{q:'First stable product of TCA cycle:',o:['Citric acid','OAA','Succinic acid','Malic acid']},bn:{q:'TCA চক্রের প্রথম স্থিতিশীল উৎপাদ:',o:['সিট্রিক অ্যাসিড','OAA','সাকসিনিক অ্যাসিড','ম্যালিক অ্যাসিড']},a:0},
+{en:{q:'Complex V of ETS is:',o:['ATP synthase','Cytochrome c','NADH dehydrogenase','Ubiquinone']},bn:{q:'ETS-এর Complex V কোনটি?',o:['ATP সিনথেজ','সাইটোক্রোম c','NADH ডিহাইড্রোজেনেজ','ইউবিকুইনোন']},a:0}
+];
+let i=0,lang='en',lock=false,score=0;
+const q=document.getElementById('question'),o=document.getElementById('options'),qno=document.getElementById('qno'),progress=document.getElementById('progress'),next=document.getElementById('next');
+function load(){lock=false;next.disabled=true;o.innerHTML='';const d=quiz[i][lang];q.textContent=d.q;qno.textContent=`Question ${i+1} / ${quiz.length}`;progress.textContent=`Score: ${score}`;d.o.forEach((t,idx)=>{const div=document.createElement('div');div.className='option';div.textContent=t;div.onclick=()=>select(div,idx);o.appendChild(div)});} 
+function select(el,idx){if(lock)return;lock=true;next.disabled=false;[...o.children].forEach((c,j)=>{if(j===quiz[i].a){c.classList.add('correct');if(j===idx)score++;}if(j===idx&&j!==quiz[i].a)c.classList.add('wrong');});progress.textContent=`Score: ${score}`;} 
+next.onclick=()=>{i++;if(i<quiz.length)load();else{q.innerHTML=`🎉 Quiz Completed<br>Score: ${score}/${quiz.length}`;o.innerHTML='';qno.textContent='';progress.textContent='';next.disabled=true;}};
+document.getElementById('en').onclick=()=>{lang='en';en.classList.add('active');bn.classList.remove('active');load()};
+document.getElementById('bn').onclick=()=>{lang='bn';bn.classList.add('active');en.classList.remove('active');load()};
+load();
+</script>
+</body>
+</html>
 
